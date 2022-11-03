@@ -23,7 +23,7 @@ namespace Text_Editor
     public partial class MainWindow : Window
     {
         public int[] Sizes { get; set; } = new int[] { 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
-        bool isBold { get; set; } = false;
+        bool isUnderline { get; set; } = false;
 
 
         public MainWindow()
@@ -48,6 +48,7 @@ namespace Text_Editor
             if (!MainTxt.Selection.IsEmpty && MainTxt.Selection.GetPropertyValue(FontFamilyProperty).ToString() != "Arial Bold")
             {
                 MainTxt.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, "Arial Bold");
+
             }
             else if (!MainTxt.Selection.IsEmpty && MainTxt.Selection.GetPropertyValue(FontFamilyProperty).ToString() == "Arial Bold")
             {
@@ -56,9 +57,16 @@ namespace Text_Editor
             else
             {
                 if (MainTxt.FontFamily.ToString() == "Arial Bold")
-                    MainTxt.FontFamily = new FontFamily("Arial");
+                {
+                    MainTxt.SelectAll();
+                    MainTxt.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, "Arial");
+                }
                 else
-                    MainTxt.FontFamily = new FontFamily("Arial Bold");
+                {
+
+                    MainTxt.SelectAll();
+                    MainTxt.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, "Arial Bold");
+                }
             }
 
         }
@@ -77,31 +85,36 @@ namespace Text_Editor
             else
             {
                 if (MainTxt.FontStyle.ToString() == FontStyles.Italic.ToString())
-                    MainTxt.FontStyle = FontStyles.Normal;
+                {
+                    MainTxt.SelectAll();
+                    MainTxt.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal);
+                }
                 else
-                    MainTxt.FontStyle = FontStyles.Italic;
+                {
+                    MainTxt.SelectAll();
+                    MainTxt.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Italic);
+                }
             }
         }
 
         private void ButtonUnderline_Click(object sender, RoutedEventArgs e)
         {
 
-           if (!MainTxt.Selection.IsEmpty && MainTxt.Selection.GetPropertyValue(Underline.TextDecorationsProperty).Equals(TextDecorations.Underline))
-           {
-               MainTxt.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty,TextDecorations.Baseline);
-           }
-           else if (!MainTxt.Selection.IsEmpty && MainTxt.Selection.GetPropertyValue(Underline.TextDecorationsProperty).Equals(TextDecorations.Underline))
-           {
-               MainTxt.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
-           }
-           else
-           {
-                RichTextBox rtb = new RichTextBox();
-
-                
-                MessageBox.Show("ss ");
+            if (!MainTxt.Selection.IsEmpty && !isUnderline)
+            {
+                MainTxt.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+                isUnderline = true;
+            }
+            else if (!MainTxt.Selection.IsEmpty && isUnderline)
+            {
+                MainTxt.Selection.ApplyPropertyValue(Underline.TextDecorationsProperty, null);
+                isUnderline=false;
+            }
+            else
+            {
                 MainTxt.SelectAll();
-           }
+                MainTxt.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+            }
         }
     }
 }
