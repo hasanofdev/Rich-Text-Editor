@@ -8,6 +8,7 @@
         Title="Rich Text Editor" Height="450" Width="800">
     <Grid>
 
+
         <Grid.RowDefinitions>
             <RowDefinition Height="0.6*"></RowDefinition>
             <RowDefinition Height="1.6*"></RowDefinition>
@@ -21,11 +22,14 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.45*"></RowDefinition>
-                <RowDefinition Height="1.5*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="0.6*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Menu Grid.Row="0">
+            <Label FontSize="30" HorizontalContentAlignment="Center" Foreground="GhostWhite" FontFamily="Arial Black">Rich Text Editor</Label>
+
+            <Menu Grid.Row="1">
                 <Menu.Background>
                     <LinearGradientBrush>
                         <GradientStop Color="#003AF6" Offset="0"></GradientStop>
@@ -38,15 +42,15 @@
                             <Image Source="Resources/addfile.png"/>
                         </MenuItem.Icon>
 
-                        <MenuItem Header="New File"></MenuItem>
-                        <MenuItem Header="New TextBox"></MenuItem>
+                        <MenuItem Header="New File" Click="MenuItemNewFile_Click" ToolTip="Create New File"></MenuItem>
+                        <MenuItem Header="New TextBox" Click="MenuItemNewTextBox_Click" ToolTip="Reset TextBox"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="_Open" FontSize="15" Foreground="Black">
                         <MenuItem.Icon>
                             <Image Source="Resources/open.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    
+
                     <Separator/>
 
                     <MenuItem Header="_Save" FontSize="15" Foreground="Black">
@@ -68,6 +72,39 @@
                 <MenuItem Header="_View" FontSize="17" Foreground="#FF98BAFF"></MenuItem>
                 <MenuItem Header="_Help" FontSize="17" Foreground="#FF98BAFF"></MenuItem>
             </Menu>
+
+            <Separator Grid.Row="1" VerticalAlignment="Bottom" Foreground="#FF98BAFF"/>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+                <Button Grid.Column="0" FontSize="30" Width="25" Foreground="GhostWhite" Background="Transparent" BorderThickness="0" FontFamily="Arial Bold" Click="ButtonBold_Click">B</Button>
+                <Button Grid.Column="1" FontSize="30" Width="25" Foreground="GhostWhite" Background="Transparent" BorderThickness="0" FontStyle="Italic" Padding="0 0 0 4" Click="ButtonItalic_Click">I</Button>
+                <Button Grid.Column="2" FontSize="30" Width="25" Foreground="GhostWhite" Background="Transparent" BorderThickness="0" Padding="0 0 0 4" Click="ButtonUnderline_Click">
+                    <TextBlock TextDecorations="Underline">U</TextBlock>
+                </Button>
+                <Button Grid.Column="3" FontSize="30" Width="25" Foreground="GhostWhite" Background="Transparent" BorderThickness="0" Padding="0 0 0 4">
+                    <TextBlock TextDecorations="Strikethrough">S</TextBlock>
+                </Button>
+                <ComboBox Grid.Column="4" ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}"
+                          SelectedIndex="0" Height="30" FontSize="17">
+                </ComboBox>
+                <ComboBox Name="SizeCombo" Grid.Column="5" SelectedIndex="0" FontSize="17" Height="30"></ComboBox>
+                
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <RichTextBox Name="MainTxt">
+                </RichTextBox>
         </Grid>
     </Grid>
 </Window>
