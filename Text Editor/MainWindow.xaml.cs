@@ -1,19 +1,15 @@
 ﻿
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Text_Editor
 {
@@ -22,10 +18,9 @@ namespace Text_Editor
     /// </summary>
     public partial class MainWindow : Window
     {
-        public int[] Sizes { get; set; } = new int[] { 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
+        string openedFile = "";
+        public double[] Sizes { get; set; } = new double[] { 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
         bool isUnderline { get; set; } = false;
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -108,13 +103,71 @@ namespace Text_Editor
             else if (!MainTxt.Selection.IsEmpty && isUnderline)
             {
                 MainTxt.Selection.ApplyPropertyValue(Underline.TextDecorationsProperty, null);
-                isUnderline=false;
+                isUnderline = false;
             }
             else
             {
                 MainTxt.SelectAll();
                 MainTxt.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
             }
+        }
+
+        private void ButtonStrikeOut_Click(object sender, RoutedEventArgs e)
+        {
+            TextRange textRange = new TextRange(MainTxt.Selection.Start, MainTxt.Selection.End);
+            var currentTextDecoration = textRange.GetPropertyValue(Inline.TextDecorationsProperty);
+
+            TextDecorationCollection newTextDecoration;
+
+
+            if (String.IsNullOrWhiteSpace(textRange.Text))
+            {
+                newTextDecoration = ((TextDecorationCollection)currentTextDecoration == TextDecorations.Strikethrough) ? new TextDecorationCollection() : TextDecorations.Strikethrough;
+                MainTxt.SelectAll();
+            }
+
+            if (currentTextDecoration != DependencyProperty.UnsetValue)
+                newTextDecoration = ((TextDecorationCollection)currentTextDecoration == TextDecorations.Strikethrough) ? new TextDecorationCollection() : TextDecorations.Strikethrough;
+            else
+                newTextDecoration = TextDecorations.Strikethrough;
+
+
+            textRange.ApplyPropertyValue(Inline.TextDecorationsProperty, newTextDecoration);
+        }
+
+        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => MainTxt.FontSize = (double)SizeCombo.SelectedItem;
+
+        private void Open_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.Filter = ".txt|*.txt";
+
+            openFile.ShowDialog();
+
+            if (String.IsNullOrWhiteSpace(openFile.FileName))
+                return;
+
+            openedFile = openFile.FileName;
+            MainTxt.SelectAll();
+            MainTxt.Selection.Text = (File.ReadAllText(openFile.FileName));
+            SaveBtn.IsEnabled = true;
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(openedFile))
+            {
+                MainTxt.SelectAll();
+                File.WriteAllText(openedFile, MainTxt.Selection.Text);
+                return;
+            }
+
+            SaveFileDialog saveFile = new SaveFileDialog();
+
+            saveFile.Filter = ".txt | *.txt";
+
+            saveFile.DefaultExt = "file.txt";
+            saveFile.ShowDialog();
         }
     }
 }
